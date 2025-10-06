@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.15.1
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      HF_TOKEN: ${HF_TOKEN}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      QDRANT_URL: "http://qdrant:6333"
+      DB_HOST: "host.docker.internal"
+      DB_PORT: "3306"
+      DB_NAME: "bookstack"
+      DB_USER: "bookstack"
+      DB_PASSWORD: "BOOKSTACK"
+    depends_on:
+      - qdrant
+    extra_hosts:
+      - "host.docker.internal:10.50.70.106"
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  qdrant_storage:
