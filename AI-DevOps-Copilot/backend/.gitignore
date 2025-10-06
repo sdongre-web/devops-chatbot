@@ -1,0 +1,60 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.log
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+
+# IDE / Editor settings
+.vscode/
+.idea/
+*.swp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.dll
+*.dylib
+
+# Test and coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+coverage.xml
+*.cover
+*.py,cover
+.cache
+pytest_cache/
+
+# Qdrant / local database / temp data
+data/
+qdrant_storage/
+*.db
+*.sqlite3
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+
+# Model checkpoints or embeddings (if big)
+*.pt
+*.bin
+*.h5
+*.ckpt
+
+# Logs or temp files
+logs/
+tmp/
+temp/
