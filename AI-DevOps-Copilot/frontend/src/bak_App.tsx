@@ -52,13 +52,11 @@ const MarkdownRenderer = ({ content }) => {
                 )}
               </button>
             </div>
-            <div className="bg-slate-950 p-4 rounded-b-lg overflow-x-auto">
-              <pre>
-                <code className="text-sm text-slate-200 font-mono whitespace-pre block">
-                  {codeContent}
-                </code>
-              </pre>
-            </div>
+            <pre className="bg-slate-950 p-4 overflow-x-auto">
+              <code className="text-sm text-slate-200 font-mono leading-relaxed">
+                {codeContent}
+              </code>
+            </pre>
           </div>
         );
         codeBlockIndex++;
@@ -69,7 +67,7 @@ const MarkdownRenderer = ({ content }) => {
       // Headers
       if (line.startsWith('### ')) {
         elements.push(
-          <h3 key={`h3-${elements.length}`} className="text-lg font-bold text-cyan-400 mt-5 mb-2 break-words">
+          <h3 key={`h3-${elements.length}`} className="text-lg font-bold text-cyan-400 mt-5 mb-2">
             {line.slice(4)}
           </h3>
         );
@@ -79,7 +77,7 @@ const MarkdownRenderer = ({ content }) => {
 
       if (line.startsWith('## ')) {
         elements.push(
-          <h2 key={`h2-${elements.length}`} className="text-xl font-bold text-cyan-300 mt-6 mb-3 break-words">
+          <h2 key={`h2-${elements.length}`} className="text-xl font-bold text-cyan-300 mt-6 mb-3">
             {line.slice(3)}
           </h2>
         );
@@ -89,7 +87,7 @@ const MarkdownRenderer = ({ content }) => {
 
       if (line.startsWith('# ')) {
         elements.push(
-          <h1 key={`h1-${elements.length}`} className="text-2xl font-bold text-white mt-6 mb-3 break-words">
+          <h1 key={`h1-${elements.length}`} className="text-2xl font-bold text-white mt-6 mb-3">
             {line.slice(2)}
           </h1>
         );
@@ -109,8 +107,8 @@ const MarkdownRenderer = ({ content }) => {
           <ul key={`ul-${elements.length}`} className="my-3 space-y-2 pl-5">
             {listItems.map((item, idx) => (
               <li key={idx} className="text-slate-200 leading-relaxed flex">
-                <span className="text-cyan-400 mr-2 flex-shrink-0">•</span>
-                <span className="break-words" dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(item) }} />
+                <span className="text-cyan-400 mr-2">•</span>
+                <span dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(item) }} />
               </li>
             ))}
           </ul>
@@ -129,7 +127,7 @@ const MarkdownRenderer = ({ content }) => {
         elements.push(
           <ol key={`ol-${elements.length}`} className="my-3 space-y-2 pl-5 list-decimal">
             {listItems.map((item, idx) => (
-              <li key={idx} className="text-slate-200 leading-relaxed ml-4 break-words" dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(item) }} />
+              <li key={idx} className="text-slate-200 leading-relaxed ml-4" dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(item) }} />
             ))}
           </ol>
         );
@@ -145,7 +143,7 @@ const MarkdownRenderer = ({ content }) => {
 
       // Regular paragraphs
       elements.push(
-        <p key={`p-${elements.length}`} className="text-slate-200 leading-relaxed my-2 break-words" dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(line) }} />
+        <p key={`p-${elements.length}`} className="text-slate-200 leading-relaxed my-2" dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(line) }} />
       );
       i++;
     }
@@ -154,26 +152,11 @@ const MarkdownRenderer = ({ content }) => {
   };
 
   const formatInlineMarkdown = (text) => {
-    // Escape HTML entities first to prevent XSS and formatting issues
-    const escapeHtml = (str) => {
-      return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    };
-    
-    // Escape the text first
-    text = escapeHtml(text);
-    
     // Bold
     text = text.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
     
-    // Inline code (restore < and > inside code blocks)
-    text = text.replace(/`([^`]+)`/g, (match, code) => {
-      return `<code class="bg-slate-900 text-cyan-400 px-1.5 py-0.5 rounded text-sm font-mono">${code}</code>`;
-    });
+    // Inline code
+    text = text.replace(/`([^`]+)`/g, '<code class="bg-slate-900 text-cyan-400 px-1.5 py-0.5 rounded text-sm font-mono">$1</code>');
     
     // Italic
     text = text.replace(/\*(.+?)\*/g, '<em class="italic text-slate-300">$1</em>');
@@ -181,7 +164,7 @@ const MarkdownRenderer = ({ content }) => {
     return text;
   };
 
-  return <div className="markdown-content overflow-hidden">{parseMarkdown(content)}</div>;
+  return <div className="markdown-content">{parseMarkdown(content)}</div>;
 };
 
 function App() {
@@ -288,9 +271,9 @@ function App() {
   };
 
   return (
-    <div className="h-screen w-full bg-slate-950 flex overflow-hidden">
+    <div className="h-screen w-full bg-slate-950 flex flex-col md:flex-row overflow-hidden fixed inset-0">
       {/* Sidebar */}
-      <div className="w-80 bg-slate-900 border-r border-slate-800 p-6 flex flex-col flex-shrink-0">
+      <div className="w-80 bg-slate-900 border-r border-slate-800 p-6 flex flex-col">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-2.5 rounded-xl">
@@ -337,7 +320,7 @@ function App() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="bg-slate-900 border-b border-slate-800 px-8 py-5">
           <div className="flex items-center justify-between">
@@ -360,25 +343,27 @@ function App() {
               className={`flex gap-4 ${msg.type === "user" ? "flex-row-reverse" : "flex-row"} animate-fadeIn`}
             >
               {/* Avatar */}
-              <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${msg.type === "user"
-                ? "bg-gradient-to-br from-purple-500 to-pink-600"
-                : "bg-gradient-to-br from-cyan-500 to-blue-600"
-                }`}>
+              <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${
+                msg.type === "user" 
+                  ? "bg-gradient-to-br from-purple-500 to-pink-600" 
+                  : "bg-gradient-to-br from-cyan-500 to-blue-600"
+              }`}>
                 {msg.type === "user" ? <User className="w-5 h-5 text-white" /> : <Bot className="w-5 h-5 text-white" />}
               </div>
 
               {/* Message */}
-              <div className={`flex flex-col max-w-[70%] min-w-0 ${msg.type === "user" ? "items-end" : "items-start"}`} style={{ maxWidth: '70%' }}>
-                <div className={`px-5 py-3.5 rounded-2xl w-full min-w-0 overflow-hidden ${msg.type === "user"
-                  ? "bg-gradient-to-br from-purple-500 to-pink-600 text-white"
-                  : "bg-slate-800 text-slate-100 border border-slate-700"
-                  }`} style={{ wordBreak: 'break-word', maxWidth: '100%' }}>
+              <div className={`flex flex-col max-w-[75%] ${msg.type === "user" ? "items-end" : "items-start"}`}>
+                <div className={`px-5 py-3.5 rounded-2xl ${
+                  msg.type === "user"
+                    ? "bg-gradient-to-br from-purple-500 to-pink-600 text-white"
+                    : "bg-slate-800 text-slate-100 border border-slate-700"
+                }`}>
                   {msg.type === "user" ? (
-                    <p className="whitespace-pre-wrap leading-relaxed text-[15px]" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{msg.text}</p>
+                    <p className="whitespace-pre-wrap leading-relaxed text-[15px]">{msg.text}</p>
                   ) : (
                     <MarkdownRenderer content={msg.text} />
                   )}
-
+                  
                   {/* Source Badge */}
                   {msg.type === "bot" && msg.source && msg.source !== "system" && (
                     <div className="mt-3 pt-3 border-t border-slate-700">
@@ -451,10 +436,6 @@ function App() {
       </div>
 
       <style>{`
-        * {
-          min-width: 0;
-          min-height: 0;
-        }
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -484,23 +465,6 @@ function App() {
         }
 
         .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-          background: #475569;
-        }
-
-        .overflow-x-auto::-webkit-scrollbar {
-          height: 8px;
-        }
-
-        .overflow-x-auto::-webkit-scrollbar-track {
-          background: #0f172a;
-        }
-
-        .overflow-x-auto::-webkit-scrollbar-thumb {
-          background: #334155;
-          border-radius: 4px;
-        }
-
-        .overflow-x-auto::-webkit-scrollbar-thumb:hover {
           background: #475569;
         }
       `}</style>
