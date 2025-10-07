@@ -57,8 +57,8 @@ Set required variables in `.env` files or via Docker Compose:
 docker-compose up --build
 ```
 
-- Backend: http://<HOST-IP>:8000
-- Frontend: http://<HOST-IP>:5173
+- Backend: http://HOST-IP:8000
+- Frontend: http://HOST-IP:5173
 
 ### 3. Data Ingestion
 
